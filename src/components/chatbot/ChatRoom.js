@@ -1,11 +1,16 @@
 import React, { useRef, useState, useCallback } from 'react'
 import ChatMessage from './ChatMessage'
 import useSend from './useSend'
+import SpeechRecognition, {useSpeechRecognition} from 'react-speech-recognition';
+
 
 const ChatRoom = () => {
 	const dummy = useRef();
 	const [messages, setMessages] = useState([])
 	const [formValue, setFormValue] = useState('');
+    const {transcript, resetTranscript} = useSpeechRecognition()
+	const [listening, setListening] = useState(false)
+	const microphoneRef = useRef(null);
 
 	const addReplyMessage = useCallback((message) => {
 		setMessages([...messages, {
@@ -31,7 +36,21 @@ const ChatRoom = () => {
 		dummy.current.scrollIntoView({ behavior: 'smooth' });
 	}
 
+	const startListening=(e)=>{
+		e.preventDefault();
+		resetTranscript()
+		setListening(true)
+        SpeechRecognition.startListening({continuous:true})
+	}
 
+	const stopListening = (e) => {
+		e.preventDefault();
+		SpeechRecognition.stopListening();
+		setFormValue(transcript)
+		setListening(false);
+		microphoneRef.current.classList.remove("listening");
+		resetTranscript()
+	};
 
 	return (<>
 		<main>
@@ -40,7 +59,8 @@ const ChatRoom = () => {
 		</main>
 
 		<form onSubmit={sendMessage}>
-			<input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
+			<input value={listening ? transcript : formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
+			<button type="button" onClick={listening ? stopListening : startListening}>{listening ? "stop" : "start"}</button>
 			<button type="submit" disabled={!formValue}>🕊️</button>
 		</form>
 	</>)

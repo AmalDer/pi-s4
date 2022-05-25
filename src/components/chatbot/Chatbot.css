@@ -67,7 +67,7 @@ main {
   
   form button {
     width: 20%;
-    background-color: rgb(56, 56, 143);
+    background-color: #DE9E7A;
   }
   
   input {
@@ -133,7 +133,7 @@ main {
   
   .sent p {
     color: white;
-    background: #0b93f6;
+    background: #DE9E7A;
     align-self: flex-end;
   }
   .received p {
@@ -141,7 +141,7 @@ main {
     color: black;
   }
   
-  img {
+  immg {
     width: 40px;
     height: 40px;
     border-radius: 50%;
